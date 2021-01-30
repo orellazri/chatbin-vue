@@ -1,18 +1,77 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div class="columns">
+      <div class="column">
+        <h1 class="title">Welcome to chatbin!</h1>
+        <p>Your code is: <span class="has-text-weight-bold">{{ hostCode }}</span></p>
+        <div class="field">
+          <a class="button is-primary" @click="hostRoom()">Host a room</a>
+        </div>
+        <hr>
+        <p>Got someone's code? Join instead:</p>
+        <div class="field">
+          <input type="text" class="input" id="joinCode" v-model="joinCode" placeholder="Enter a code...">
+        </div>
+        <div class="field">
+          <a class="button is-primary" @click="joinRoom()">Join a room</a>
+        </div>
+
+        <div class="notification is-danger is-light"
+          v-for="error in errors" v-bind:key="error">
+          {{ error }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import router from '@/router';
+import db from '@/db';
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      errors: [],
+      joinCode: ''
+    }
+  },
+
+  computed: {
+    hostCode() {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+      for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    }
+  },
+
+  methods: {
+    hostRoom() {
+      db.collection('rooms').doc(this.hostCode).set({});
+      router.push('/chat/' + this.hostCode);
+    },
+
+    async joinRoom() {
+      if (this.joinCode.trim() == '') return;
+
+      const room = await db.collection('rooms').doc(this.joinCode).get();
+      if (room.exists) {
+        router.push('/chat/' + this.joinCode);
+      } else {
+        this.errors.push('Room code does not exist.');
+      }
+    },
   }
 }
 </script>
+
+<style lang="scss" scoped>
+#joinCode {
+  max-width: 150px; 
+}
+</style>
