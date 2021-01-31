@@ -25,4 +25,5 @@ pnpm-debug.log*
 firebase.js
 .firebaserc
 firebase.json
+.firebase
 .github
