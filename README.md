@@ -1,9 +1,15 @@
 # chatbin-vue
 
+💬 Disposable chat (chatbin) frontend made in vue
+
+You can see a live demo on: https://chatbin-a7172.web.app/
+
 ## Project setup
 ```
 yarn install
 ```
+
+Rename `src/firebase.js.example` to `firebase.js` and edit with your firebase project config.
 
 ### Compiles and hot-reloads for development
 ```
