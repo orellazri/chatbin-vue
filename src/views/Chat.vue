@@ -16,9 +16,12 @@
 
 			<div class="columns chatbox">
 				<div class="column">
-					<p v-for="message in messages" v-bind:key="message.text">
-						{{ message.text }}
-					</p>
+					<div class="messages">
+						<div v-for="message in messages"
+							v-bind:key="message.text" class="bubble" :class="message.sender != userId ? 'received' : 'sent'">
+							{{ message.text }}
+						</div>
+					</div>
 
 					<form class="field has-addons" v-on:submit.prevent="sendMessage()">
 						<div class="control is-expanded">
@@ -35,9 +38,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import router from '@/router';
-import db from '@/db';
+import store from '@/store';
 import firebase from '@/firebase';
+import db from '@/db';
 
 export default {
   name: 'Chat',
@@ -50,14 +55,21 @@ export default {
 		}
 	},
 
-	async created() {
-		// TODO: uncomment this validation
-		const room = await db.collection('rooms').doc(this.$route.params.code).get();
+	computed: mapState(['userId']),
 
-		if (!room.exists) {
-			this.error = 'This room does not exist!';
-			return;
+	async created() {
+		// Check if not logged in
+		if (this.userId == '') {
+			router.push('/');
 		}
+
+		// TODO: uncomment this validation
+		// const room = await db.collection('rooms').doc(this.$route.params.code).get();
+
+		// if (!room.exists) {
+		// 	this.error = 'This room does not exist!';
+		// 	return;
+		// }
 
 		this.code = this.$route.params.code;
 
@@ -76,6 +88,7 @@ export default {
 
 			await db.collection('rooms').doc(this.code).collection('messages').doc().set({
 				text: text,
+				sender: this.userId,
 				created_at: firebase.firestore.FieldValue.serverTimestamp()
 			});
 		},
@@ -87,5 +100,30 @@ export default {
 .chatbox {
 	background: #fff;
 	border-radius: 5px;
+
+	.messages {
+		min-height: 60vh;		
+
+		.bubble {
+			position: relative;
+			background: #4849A1;
+			color: #fff;
+			padding: 0.6rem;
+			border-bottom: 2px solid #eee;
+			border-radius: .4em;
+			-webkit-box-shadow: 5px 5px 9px -6px rgba(112,112,112,0.3); 
+			box-shadow: 5px 5px 9px -6px rgba(112,112,112,0.3);
+			margin-bottom: 10px;
+			display: inline-block;
+			max-width: 600px;
+			float: left;
+			clear: both;
+		}
+
+		.received {
+			float: right !important;
+			background:#777 !important;
+		}
+	}
 }
 </style>

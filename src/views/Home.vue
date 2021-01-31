@@ -27,6 +27,8 @@
 
 <script>
 import router from '@/router';
+import store from '@/store';
+import firebase from '@/firebase';
 import db from '@/db';
 
 export default {
@@ -36,6 +38,10 @@ export default {
       errors: [],
       joinCode: ''
     }
+  },
+
+  async created() {
+    store.dispatch("logIn");
   },
 
   computed: {
