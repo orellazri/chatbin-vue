@@ -2,6 +2,9 @@
 
 💬 Disposable chat (chatbin) frontend made in vue
 
+## Demo
+https://chatbin-a7172.web.app/#/
+
 ## Project setup
 ```
 yarn install
