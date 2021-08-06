@@ -1,6 +1,6 @@
 # chatbin-vue
 
-💬 Disposable chat (chatbin) frontend made in vue
+💬 Disposable chat (chatbin) frontend made in Vue. Uses Firebase as backend.
 
 ## Demo
 https://chatbin-a7172.web.app/#/
